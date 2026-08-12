@@ -113,6 +113,11 @@
       cursor: pointer;
     }
 
+    .generate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     .generate-btn:active {
       transform: scale(0.98);
     }
@@ -141,7 +146,7 @@
 
   <div class="container">
 
-    <div class="logo"> Movie Recap AI</div>
+    <div class="logo">🎬 Movie Recap AI</div>
 
     <div class="subtitle">
       Video ထည့်ပြီး Movie Recap Script ရယူပါ
@@ -151,12 +156,12 @@
 
       <div class="upload-box">
 
-        <div class="upload-icon"></div>
+        <div class="upload-icon">🎥</div>
 
         <p>Movie / Video ဖိုင်ကို ရွေးပါ</p>
 
         <label for="videoInput" class="upload-btn">
-           Upload Video
+          📁 Upload Video
         </label>
 
         <input
@@ -186,12 +191,12 @@
       </select>
 
       <button class="generate-btn" onclick="generateScript()">
-         Generate Script
+        ✨ Generate Script
       </button>
 
       <div class="result" id="result">
 
-        <h2> Generated Script</h2>
+        <h2>📝 Generated Script</h2>
 
         <div class="result-text" id="resultText"></div>
 
@@ -211,11 +216,13 @@
       if (this.files.length > 0) {
         fileName.textContent =
           "Selected: " + this.files[0].name;
+      } else {
+        fileName.textContent = "";
       }
 
     });
 
-    function generateScript() {
+    async function generateScript() {
 
       if (!videoInput.files.length) {
         alert("အရင်ဆုံး Video တစ်ခု Upload လုပ်ပါ။");
@@ -224,13 +231,56 @@
 
       const result = document.getElementById("result");
       const resultText = document.getElementById("resultText");
+      const language = document.getElementById("language").value;
+      const scriptType = document.getElementById("scriptType").value;
+      const button = document.querySelector(".generate-btn");
 
       result.style.display = "block";
 
       resultText.textContent =
-        "Video ကို လက်ခံရရှိပါပြီ။\n\n" +
-        "AI Script Generator ကို မကြာခင် ချိတ်ဆက်ပေးပါမယ်။";
+        "🤖 AI က Script ရေးနေပါတယ်...\n\nခဏစောင့်ပေးပါ။";
 
+      button.disabled = true;
+
+      try {
+
+        const response = await fetch("/api/generate", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            language: language,
+            scriptType: scriptType
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "AI Script Generation Failed"
+          );
+        }
+
+        resultText.textContent =
+          data.script || "Script မရရှိပါ။";
+
+      } catch (error) {
+
+        console.error(error);
+
+        resultText.textContent =
+          "❌ Script ထုတ်ရာမှာ အမှားဖြစ်ပါတယ်။\n\n" +
+          error.message;
+
+      } finally {
+
+        button.disabled = false;
+
+      }
     }
 
   </script>
