@@ -2,11 +2,25 @@ import OpenAI from "openai";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
   }
 
   try {
-    const { language, scriptType } = req.body;
+    const { language, scriptType } = req.body || {};
+
+    if (!language || !scriptType) {
+      return res.status(400).json({
+        error: "Language or script type is missing."
+      });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({
+        error: "OPENAI_API_KEY is not configured in Vercel."
+      });
+    }
 
     const client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY
@@ -15,12 +29,16 @@ export default async function handler(req, res) {
     const prompt = `
 You are a professional movie recap script writer.
 
-Write a ${scriptType} script.
+Create a ${scriptType} script.
 
-Language: ${language === "myanmar" ? "Burmese (Myanmar)" : "English"}
+Language: ${
+      language === "myanmar"
+        ? "Burmese (Myanmar)"
+        : "English"
+    }
 
-Make the script engaging, natural, and suitable for voice-over.
-Use clear storytelling.
+Write an engaging, natural script suitable for voice-over.
+Use clear storytelling and easy-to-understand language.
 `;
 
     const response = await client.responses.create({
@@ -33,10 +51,11 @@ Use clear storytelling.
     });
 
   } catch (error) {
-    console.error(error);
+
+    console.error("OpenAI Error:", error);
 
     return res.status(500).json({
-      error: "AI script generation failed."
+      error: error?.message || "Unknown OpenAI API error."
     });
   }
-  }
+}
