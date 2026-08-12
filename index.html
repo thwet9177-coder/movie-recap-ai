@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Movie Recap AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1117;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 600px;
+      margin: auto;
+      padding: 35px 0;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9ca3af;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #181b24;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .upload-box {
+      border: 2px dashed #4b5563;
+      border-radius: 15px;
+      padding: 35px 15px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .upload-icon {
+      font-size: 45px;
+      margin-bottom: 12px;
+    }
+
+    .upload-box p {
+      color: #9ca3af;
+      margin-bottom: 18px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      background: #6366f1;
+      padding: 12px 22px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .file-name {
+      margin-top: 15px;
+      color: #a5b4fc;
+      word-break: break-word;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #d1d5db;
+    }
+
+    select {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      background: #111827;
+      color: white;
+      font-size: 16px;
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #8b5cf6;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .generate-btn:active {
+      transform: scale(0.98);
+    }
+
+    .result {
+      display: none;
+      margin-top: 25px;
+      background: #111827;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .result h2 {
+      margin-bottom: 15px;
+    }
+
+    .result-text {
+      color: #d1d5db;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo"> Movie Recap AI</div>
+
+    <div class="subtitle">
+      Video ထည့်ပြီး Movie Recap Script ရယူပါ
+    </div>
+
+    <div class="card">
+
+      <div class="upload-box">
+
+        <div class="upload-icon"></div>
+
+        <p>Movie / Video ဖိုင်ကို ရွေးပါ</p>
+
+        <label for="videoInput" class="upload-btn">
+           Upload Video
+        </label>
+
+        <input
+          type="file"
+          id="videoInput"
+          accept="video/*"
+        >
+
+        <div class="file-name" id="fileName"></div>
+
+      </div>
+
+      <label>Script Language</label>
+
+      <select id="language">
+        <option value="myanmar">မြန်မာ</option>
+        <option value="english">English</option>
+      </select>
+
+      <label>Script Type</label>
+
+      <select id="scriptType">
+        <option value="movie-recap">Movie Recap</option>
+        <option value="short">Short Recap</option>
+        <option value="youtube">YouTube Script</option>
+        <option value="tiktok">TikTok Script</option>
+      </select>
+
+      <button class="generate-btn" onclick="generateScript()">
+         Generate Script
+      </button>
+
+      <div class="result" id="result">
+
+        <h2> Generated Script</h2>
+
+        <div class="result-text" id="resultText"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const videoInput = document.getElementById("videoInput");
+    const fileName = document.getElementById("fileName");
+
+    videoInput.addEventListener("change", function () {
+
+      if (this.files.length > 0) {
+        fileName.textContent =
+          "Selected: " + this.files[0].name;
+      }
+
+    });
+
+    function generateScript() {
+
+      if (!videoInput.files.length) {
+        alert("အရင်ဆုံး Video တစ်ခု Upload လုပ်ပါ။");
+        return;
+      }
+
+      const result = document.getElementById("result");
+      const resultText = document.getElementById("resultText");
+
+      result.style.display = "block";
+
+      resultText.textContent =
+        "Video ကို လက်ခံရရှိပါပြီ။\n\n" +
+        "AI Script Generator ကို မကြာခင် ချိတ်ဆက်ပေးပါမယ်။";
+
+    }
+
+  </script>
+
+</body>
+</html>
